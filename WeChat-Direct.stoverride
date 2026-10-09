@@ -1,0 +1,86 @@
+name: '💬 WeChat: Direct'
+desc: |-
+  微信/腾讯系域名强制直连，解决开 VPN 后微信图片/视频加载慢的问题。
+  覆写特性：rules 数组会插入到原配置 rules 最前面，优先级最高。
+  nameserver-policy 和 fake-ip-filter 会与原配置合并。
+  适用于国际版微信及国内微信。
+author: 'liusanbai'
+homepage: 'https://github.com/liusanbai/stash-wechat-direct'
+icon: 'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/WeChat.png'
+category: '🇨🇳 Direct'
+date: '2026-10-09'
+version: '1.0.0'
+
+# === DNS 策略：微信域名走国内 DNS，确保解析到国内 CDN 节点 ===
+dns:
+  nameserver-policy:
+    '+.qq.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.wechat.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.qpic.cn':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.tencent.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.gtimg.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.qcloud.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.weixinbridge.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+    '+.servicewechat.com':
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+
+  fake-ip-filter:
+    - '+.qq.com'
+    - '+.weixin.qq.com'
+    - '+.qpic.cn'
+    - '+.tencent.com'
+    - '+.gtimg.com'
+    - '+.qcloud.com'
+    - '+.wechat.com'
+    - '+.weixinbridge.com'
+    - '+.servicewechat.com'
+
+# === 规则：微信/腾讯系域名全部直连，插在 rules 最前面 ===
+# 覆写机制：数组类型会 prepend（插入到原数组开头），优先级最高
+rules:
+  # --- 微信核心域名 ---
+  - DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,mmbiz.qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,mmbiz2.qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,mmbiz3.qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,mmbiz4.qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,wechat.com,DIRECT
+  - DOMAIN-SUFFIX,weixinbridge.com,DIRECT
+  - DOMAIN-SUFFIX,servicewechat.com,DIRECT
+  # --- 腾讯系 CDN / 云服务 ---
+  - DOMAIN-SUFFIX,gtimg.com,DIRECT
+  - DOMAIN-SUFFIX,qcloud.com,DIRECT
+  - DOMAIN-SUFFIX,myqcloud.com,DIRECT
+  - DOMAIN-SUFFIX,tencent.com,DIRECT
+  # --- QQ 通用域名兜底直连 ---
+  - DOMAIN-SUFFIX,qq.com,DIRECT
+  - DOMAIN-SUFFIX,qqmail.com,DIRECT
+  - DOMAIN-SUFFIX,qlogo.cn,DIRECT
+  # --- 微信短链/图片代理域名 ---
+  - DOMAIN-SUFFIX,szshort.weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,szextshort.weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,szminorshort.weixin.qq.com,DIRECT
+  # --- 微信支付/小程序图片 CDN ---
+  - DOMAIN-SUFFIX,wx.qq.com,DIRECT
+  - DOMAIN-SUFFIX,mp.weixin.qq.com,DIRECT
+  - DOMAIN-SUFFIX,minorshort.weixin.qq.com,DIRECT
+  # --- 腾讯视频 CDN（微信内嵌视频） ---
+  - DOMAIN-SUFFIX,video.qq.com,DIRECT
+  - DOMAIN-SUFFIX,livevideo.qq.com,DIRECT
+  - DOMAIN-SUFFIX,v.qq.com,DIRECT
